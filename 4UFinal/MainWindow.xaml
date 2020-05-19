@@ -4,11 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_4UFinal"
-        mc:Ignorable="d" Height="800" Width="1000" MinWidth="1000" MinHeight="800">
+        mc:Ignorable="d" Height="800" Width="1000" MinWidth="1000" MinHeight="800" KeyDown="OuterScreen_KeyDown">
     <Window.Background>
         <ImageBrush/>
     </Window.Background>
     <Grid>
-        <Canvas x:Name="InnerScreen" HorizontalAlignment="Center" Height="800" Margin="0" VerticalAlignment="Center" Width="1000" Background="Black"/>
+        <Canvas x:Name="InnerScreen" HorizontalAlignment="Center" Height="800" Margin="0" VerticalAlignment="Center" Width="1000" Background="Black">
+            <Canvas x:Name="TextCanvas" Height="150" Canvas.Left="25" Canvas.Top="625" Width="950" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Canvas.Background>
+                    <ImageBrush/>
+                </Canvas.Background>
+                <Image x:Name="TextPortrait" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="5">
+                </Image>
+                <TextBlock x:Name="DialogueBox" Height="85" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="50" Width="760" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="White"/>
+                <TextBlock x:Name="DialogueName" Height="24" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="21" Width="760" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="#FFFFC500"/>
+            </Canvas>
+        </Canvas>
     </Grid>
 </Window>
