@@ -11,13 +11,28 @@
     <Grid>
         <Canvas x:Name="InnerScreen" HorizontalAlignment="Center" Height="800" Margin="0" VerticalAlignment="Center" Width="1000" Background="Black">
             <Canvas x:Name="TextCanvas" Height="150" Canvas.Left="25" Canvas.Top="625" Width="950" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Canvas.Background>
-                    <ImageBrush/>
-                </Canvas.Background>
-                <Image x:Name="TextPortrait" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="5">
-                </Image>
-                <TextBlock x:Name="DialogueBox" Height="85" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="50" Width="760" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="White"/>
-                <TextBlock x:Name="DialogueName" Height="24" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="21" Width="760" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="#FFFFC500"/>
+                <Image x:Name="TextPortrait" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="5"/>
+                <Image x:Name="ItemBox" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="805" MouseDown="ItemBox_MouseDown"/>
+                <TextBlock x:Name="DialogueBox" Height="85" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="50" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="White"/>
+                <TextBlock x:Name="DialogueName" Height="24" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="21" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="#FFFFC500"/>
+            </Canvas>
+            <Canvas x:Name="Stage" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Background="White"/>
+            <Canvas x:Name="InventoryCanvas" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Visibility="Hidden">
+                <Image x:Name="invslotA" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="20"/>
+                <Image x:Name="invslotB" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="212.5"/>
+                <Image x:Name="invslotC" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="405"/>
+                <Image x:Name="invslotD" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="597.5"/>
+                <Image x:Name="invslotE" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="790"/>
+                <Image x:Name="invslotF" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="205" Canvas.Left="20"/>
+                <Image x:Name="invslotG" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="205" Canvas.Left="212.5"/>
+                <Image x:Name="invslotH" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="205" Canvas.Left="405"/>
+                <Image x:Name="invslotI" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="205" Canvas.Left="597.5"/>
+                <Image x:Name="invslotJ" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="205" Canvas.Left="790"/>
+                <Image x:Name="invslotK" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="20"/>
+                <Image x:Name="invslotL" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="212.5"/>
+                <Image x:Name="invslotM" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="405"/>
+                <Image x:Name="invslotN" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="597.5"/>
+                <Image x:Name="invslotO" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="790"/>
             </Canvas>
         </Canvas>
     </Grid>

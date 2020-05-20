@@ -30,6 +30,7 @@ namespace _4UFinal
         // <RW Variables> - Read and write variables
         public bool isFullscreen = false; // Is F11 mode is on?
         public bool changingFullscreen = false; // Is F11 currently changing?
+        public bool changingInventory = false; // Is the inventory menu currently being opened?
         ImageBrush bk = new ImageBrush();
         // </RW Variables>
 
@@ -51,7 +52,9 @@ namespace _4UFinal
             // </tiling>
             // <loadAssets>
             TextCanvas.Background = new ImageBrush(assets[1]);
+            InventoryCanvas.Background = new ImageBrush(assets[2]);
             TextPortrait.Source = items[0];
+            ItemBox.Source = items[0];
             // </loadAssets>
         }
 
@@ -62,6 +65,18 @@ namespace _4UFinal
             List<BitmapImage> container = new List<BitmapImage>();
             foreach (string file in temp) { container.Add(new BitmapImage(new Uri(System.IO.Path.Combine(Environment.CurrentDirectory, file)))); }
             return container;
+        }
+
+        private void ShowHide(Canvas canv) // Toggles the visibility of a specified canvas. Mainly for menus.
+        {
+            if (canv.Visibility == Visibility.Visible)
+            {
+                canv.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                canv.Visibility = Visibility.Visible;
+            }
         }
 
         private void OuterScreen_KeyDown(object sender, KeyEventArgs e) // Activates and deactivates F11 Mode
@@ -87,6 +102,17 @@ namespace _4UFinal
                 }
                 changingFullscreen = false;
             }
+        }
+
+        private void ItemBox_MouseDown(object sender, MouseButtonEventArgs e) // Opens and closes the inventory menu
+        {
+            if (!changingInventory)
+            {
+                changingInventory = true;
+                ShowHide(InventoryCanvas);
+                changingInventory = false;
+            }
+
         }
     }
 }
