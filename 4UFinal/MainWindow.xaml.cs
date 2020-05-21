@@ -22,16 +22,21 @@ namespace _4UFinal
     public partial class MainWindow : Window
     {
         // <RO Variables> - Read-only variables
-        List<BitmapImage> assets = new List<BitmapImage>() { }; // Static assets (do not change during the game)
-        List<BitmapImage> portraits = new List<BitmapImage>() { }; // Character portraits for text box
-        List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
+        static List<BitmapImage> assets = new List<BitmapImage>() { }; // Static assets (do not change during the game)
+        static List<BitmapImage> portraits = new List<BitmapImage>() { }; // Character portraits for text box
+        static List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
+        List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
         public bool isFullscreen = false; // Is F11 mode is on?
         public bool changingFullscreen = false; // Is F11 currently changing?
         public bool changingInventory = false; // Is the inventory menu currently being opened?
-        ImageBrush bk = new ImageBrush();
+        public bool changingItemslot = false; // Is an item currently being selected?
+        ImageBrush bk = new ImageBrush(); // TileBrush for the background
+
+        List<Item> inventory = new List<Item>() {}; // Inventory
+        Item selectedItem; // The item that appears in the item slot
         // </RW Variables>
 
         public MainWindow()
@@ -53,9 +58,13 @@ namespace _4UFinal
             // <loadAssets>
             TextCanvas.Background = new ImageBrush(assets[1]);
             InventoryCanvas.Background = new ImageBrush(assets[2]);
-            TextPortrait.Source = items[0];
+            TextPortrait.Source = null;
             ItemBox.Source = items[0];
+            CreateInventory();
             // </loadAssets>
+            // <debugging>
+            inventory.Add(new Item("Stopwatch", "It tells the time. I keep it in my back pocket.", items[1], new BitmapImage()));
+            // </debugging>
         }
 
         private List<BitmapImage> LoadImages(string path) // Loads images from a specified folder and returns a list of ImageBrushs
@@ -77,6 +86,49 @@ namespace _4UFinal
             {
                 canv.Visibility = Visibility.Visible;
             }
+        }
+
+        private void CreateInventory() // Initializes inventory slots
+        {
+            Image img;
+            double tempX = 20;
+            double tempY = 20;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    img = new Image();
+                    img.Height = 140;
+                    img.Width = 140;
+                    img.Margin = new Thickness(tempX, tempY, 0, 0);
+                    img.MouseDown += InventorySlot_MouseDown;
+                    img.MouseEnter += InventorySlot_MouseEnter;
+                    img.MouseLeave += InventorySlot_MouseLeave;
+                    invSlots.Add(img);
+                    tempX += 192.5;
+                }
+                tempX = 20;
+                tempY += 185;
+            }
+
+            foreach (Image slot in invSlots)
+            {
+                InventoryCanvas.Children.Add(slot);
+            }
+        }
+
+        private void PrintObject(Item selected, bool name = true, bool description = true, bool portrait = false) // Displays on-screen information about the object
+        {
+            if (name) DialogueName.Text = selected.Name;
+            if (description) DialogueBox.Text = selected.Description;
+            if (portrait) TextPortrait.Source = selected.Portrait;
+        }
+
+        private void ClearPrint() // Removes text and images from the dialogue box
+        {
+            DialogueName.Text = string.Empty;
+            DialogueBox.Text = string.Empty;
+            TextPortrait.Source = null;
         }
 
         private void OuterScreen_KeyDown(object sender, KeyEventArgs e) // Activates and deactivates F11 Mode
@@ -110,9 +162,53 @@ namespace _4UFinal
             {
                 changingInventory = true;
                 ShowHide(InventoryCanvas);
+                for (int i = 0; i < 15; i++)
+                {
+                    if (i < inventory.Count) invSlots[i].Source = inventory[i].Portrait;
+                    else invSlots[i].Source = items[0];
+                }
                 changingInventory = false;
             }
+        }
 
+        private void InventorySlot_MouseDown(object sender, MouseButtonEventArgs e) // Event handler for clicking each inventory slot
+        {
+            if (!changingItemslot)
+            {
+                changingItemslot = true;
+                Image root = e.Source as Image;
+                int index = invSlots.FindIndex((r => r == root));
+                if (index > inventory.Count() - 1)
+                {
+                    selectedItem = null;
+                }
+                else
+                {
+                    selectedItem = inventory[index];
+                }
+                ItemBox.Source = (selectedItem == null ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
+                ShowHide(InventoryCanvas);
+                changingItemslot = false;
+            }
+        }
+
+        private void InventorySlot_MouseEnter(object sender, MouseEventArgs e) // Prints description and name of object the mouse is hovering over
+        {
+            Image root = e.Source as Image;
+            int index = invSlots.FindIndex((r => r == root));
+            if (index > inventory.Count() - 1)
+            {
+                ClearPrint();
+            }
+            else
+            {
+                PrintObject(inventory[index], true, true, false);
+            }
+        }
+
+        private void InventorySlot_MouseLeave(object sender, MouseEventArgs e) // Clears the print when hovering over nothing
+        {
+            ClearPrint();
         }
     }
 }

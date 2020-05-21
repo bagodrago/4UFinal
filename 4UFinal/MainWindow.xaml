@@ -18,6 +18,7 @@
             </Canvas>
             <Canvas x:Name="Stage" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Background="White"/>
             <Canvas x:Name="InventoryCanvas" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Visibility="Hidden">
+                <!--
                 <Image x:Name="invslotA" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="20"/>
                 <Image x:Name="invslotB" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="212.5"/>
                 <Image x:Name="invslotC" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="20" Canvas.Left="405"/>
@@ -33,6 +34,7 @@
                 <Image x:Name="invslotM" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="405"/>
                 <Image x:Name="invslotN" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="597.5"/>
                 <Image x:Name="invslotO" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="390" Canvas.Left="790"/>
+                -->
             </Canvas>
         </Canvas>
     </Grid>
