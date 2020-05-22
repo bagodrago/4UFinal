@@ -23,9 +23,10 @@ namespace _4UFinal
     {
         // <RO Variables> - Read-only variables
         static List<BitmapImage> assets = new List<BitmapImage>() { }; // Static assets (do not change during the game)
-        static List<BitmapImage> portraits = new List<BitmapImage>() { }; // Character portraits for text box
+        static List<BitmapImage> props = new List<BitmapImage>() { }; // Character portraits for text box
         static List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
+        //List<Prop> propDB = new List<Prop>() { };
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
@@ -33,10 +34,14 @@ namespace _4UFinal
         public bool changingFullscreen = false; // Is F11 currently changing?
         public bool changingInventory = false; // Is the inventory menu currently being opened?
         public bool changingItemslot = false; // Is an item currently being selected?
+        public bool changingRoom = false; // Is the stage switching between rooms?
         ImageBrush bk = new ImageBrush(); // TileBrush for the background
 
         List<Item> inventory = new List<Item>() {}; // Inventory
+        List<Room> mansion = new List<Room>() {}; // All rooms in the game
+        int currentRoom = 0;
         Item selectedItem; // The item that appears in the item slot
+        bool facingNorth = true; // Which direction the player faces.
         // </RW Variables>
 
         public MainWindow()
@@ -44,7 +49,7 @@ namespace _4UFinal
             InitializeComponent();
             // <loadFiles>
             assets = LoadImages(@".\img\assets");
-            portraits = LoadImages(@".\img\portraits");
+            props = LoadImages(@".\img\props");
             items = LoadImages(@".\img\items");
             // </loadFiles>
             // <tiling> - Creates tiling background
@@ -60,8 +65,11 @@ namespace _4UFinal
             InventoryCanvas.Background = new ImageBrush(assets[2]);
             TextPortrait.Source = null;
             ItemBox.Source = items[0];
-            CreateInventory();
             // </loadAssets>
+            //<initializeSystems>
+            CreateInventory();
+            CreateMansion();
+            // </initializeSystems>
             // <debugging>
             inventory.Add(new Item("Stopwatch", "It tells the time. I keep it in my back pocket.", items[1], new BitmapImage()));
             // </debugging>
@@ -88,6 +96,26 @@ namespace _4UFinal
             }
         }
 
+        private void RefreshStage() // Reload props and background for changing rooms.
+        {
+            Stage.Children.Clear();
+            if (facingNorth)
+            {
+                foreach (Prop prop in mansion[currentRoom].North)
+                {
+                    Stage.Children.Add(prop.Sprite);
+                }
+            }
+            else
+            {
+                foreach (Prop prop in mansion[currentRoom].South)
+                {
+                    Stage.Children.Add(prop.Sprite);
+                }
+            }
+        }
+
+        //<initialization>
         private void CreateInventory() // Initializes inventory slots
         {
             Image img;
@@ -104,6 +132,7 @@ namespace _4UFinal
                     img.MouseDown += InventorySlot_MouseDown;
                     img.MouseEnter += InventorySlot_MouseEnter;
                     img.MouseLeave += InventorySlot_MouseLeave;
+                    img.Cursor = Cursors.Hand;
                     invSlots.Add(img);
                     tempX += 192.5;
                 }
@@ -117,6 +146,13 @@ namespace _4UFinal
             }
         }
 
+        private void CreateMansion()
+        {
+            mansion.Add(new Room(new List<Prop>() { }, new List<Prop>() { }));
+        }
+        //</initialization>
+
+        //<dialogue>
         private void PrintObject(Item selected, bool name = true, bool description = true, bool portrait = false) // Displays on-screen information about the object
         {
             if (name) DialogueName.Text = selected.Name;
@@ -130,7 +166,30 @@ namespace _4UFinal
             DialogueBox.Text = string.Empty;
             TextPortrait.Source = null;
         }
+        //</dialogue>
 
+        //<propInteraction>
+        private void PropPressed(object sender, MouseButtonEventArgs e) //
+        {
+            Image pressed = e.Source as Image;
+            string parent;
+            if (facingNorth)
+            {
+                parent = mansion[currentRoom].North.Find(p => p.Sprite == pressed).Name;
+            }
+            else
+            {
+                parent = mansion[currentRoom].South.Find(p => p.Sprite == pressed).Name;
+            }
+            switch (parent)
+            {
+                default:
+                    break;
+            }
+        }
+        //</propInteraction>
+
+        //<events>
         private void OuterScreen_KeyDown(object sender, KeyEventArgs e) // Activates and deactivates F11 Mode
         {
             if (e.Key == Key.F11 && !changingFullscreen)
@@ -210,5 +269,18 @@ namespace _4UFinal
         {
             ClearPrint();
         }
+
+        private void NSButton_MouseDown(object sender, MouseButtonEventArgs e) // Switches between north and south facing
+        {
+            if (!changingRoom)
+            {
+                changingRoom = true;
+                facingNorth = !facingNorth;
+                RefreshStage();
+                changingRoom = false;
+            }
+        }
+
+        //</events>
     }
 }

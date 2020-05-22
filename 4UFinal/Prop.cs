@@ -4,23 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace _4UFinal
 {
-    class Item
+    class Prop
     {
         // <declaration>
         private string l_name;
         private string l_desciption;
-        private BitmapImage l_portrait;
+        private Image l_sprite;
+        private int l_warp;
         // </declaration>
 
-        // <initialization>
-        public Item(string name, string description, BitmapImage portrait, BitmapImage sprite)
+        // <initialization> - Name>Description>Source>X>Y>Warp
+        public Prop(string name, string description, BitmapImage sprite, Thickness coordinates, int warp = -1)
         {
             l_name = name;
             l_desciption = description;
-            l_portrait = portrait;
+            l_sprite.Source = sprite;
+            l_sprite.Margin = coordinates;
+            l_warp = warp;
         }
         // </initialization>
 
@@ -43,9 +48,18 @@ namespace _4UFinal
             }
         }
 
-        public BitmapImage Portrait
+        public Image Sprite
         {
-            get => l_portrait;
+            get => l_sprite;
+            set
+            {
+                l_sprite = value;
+            }
+        }
+
+        public int Warp
+        {
+            get => l_warp;
         }
         // </get-sets>
     }
