@@ -39,5 +39,13 @@ namespace _4UFinal
             }
         }
         // </get-sets>
+
+        // <methods>
+        public Room Clone()
+        {
+            Room temp = new Room(l_northFurniture.ToList(), l_southFurniture.ToList());
+            return temp;
+        }
+        // </methods>
     }
 }

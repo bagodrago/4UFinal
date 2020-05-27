@@ -26,7 +26,6 @@ namespace _4UFinal
         static List<BitmapImage> props = new List<BitmapImage>() { }; // Character portraits for text box
         static List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
-        //List<Prop> propDB = new List<Prop>() { };
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
@@ -53,11 +52,13 @@ namespace _4UFinal
             items = LoadImages(@".\img\items");
             // </loadFiles>
             // <tiling> - Creates tiling background
-            bk = new ImageBrush(assets[0]);
-            bk.TileMode = TileMode.Tile;
-            bk.Stretch = Stretch.None;
-            bk.Viewport = new Rect(0, 0, 32, 32);
-            bk.ViewportUnits = BrushMappingMode.Absolute;
+            bk = new ImageBrush(assets[0])
+            {
+                TileMode = TileMode.Tile,
+                Stretch = Stretch.None,
+                Viewport = new Rect(0, 0, 32, 32),
+                ViewportUnits = BrushMappingMode.Absolute
+            };
             OuterScreen.Background = bk;
             // </tiling>
             // <loadAssets>
@@ -69,6 +70,8 @@ namespace _4UFinal
             //<initializeSystems>
             CreateInventory();
             CreateMansion();
+            ClearPrint();
+            RefreshStage();
             // </initializeSystems>
             // <debugging>
             inventory.Add(new Item("Stopwatch", "It tells the time. I keep it in my back pocket.", items[1], new BitmapImage()));
@@ -125,14 +128,16 @@ namespace _4UFinal
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    img = new Image();
-                    img.Height = 140;
-                    img.Width = 140;
-                    img.Margin = new Thickness(tempX, tempY, 0, 0);
+                    img = new Image()
+                    {
+                        Height = 140,
+                        Width = 140,
+                        Margin = new Thickness(tempX, tempY, 0, 0),
+                        Cursor = Cursors.Hand
+                    };
                     img.MouseDown += InventorySlot_MouseDown;
                     img.MouseEnter += InventorySlot_MouseEnter;
                     img.MouseLeave += InventorySlot_MouseLeave;
-                    img.Cursor = Cursors.Hand;
                     invSlots.Add(img);
                     tempX += 192.5;
                 }
@@ -146,9 +151,42 @@ namespace _4UFinal
             }
         }
 
-        private void CreateMansion()
+        private void CreateMansion() // Reads room files and loads mansion with rooms and props.
         {
-            mansion.Add(new Room(new List<Prop>() { }, new List<Prop>() { }));
+            string[] room;
+            string[] tempProps;
+            Room tempRoom;
+            Prop tempProp;
+            try
+            {
+                tempRoom = new Room(new List<Prop>(), new List<Prop>());
+                for (int i = 0; i < 6; i++)
+                {
+                    room = File.ReadAllLines(@".\rooms\north\" + i + ".txt");
+                    for (int j = 0; j < room.Count(); j++)
+                    {
+                        tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
+                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0), int.Parse(tempProps[5]));
+                        tempProp.Sprite.MouseEnter += Prop_MouseEnter;
+                        tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
+                        tempRoom.North.Add(tempProp);
+                    }
+                    room = File.ReadAllLines(@".\rooms\south\" + i + ".txt");
+                    for (int j = 0; j < room.Count(); j++)
+                    {
+                        tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
+                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0), int.Parse(tempProps[5]));
+
+                        tempRoom.South.Add(tempProp);
+                    }
+
+                    mansion.Add(tempRoom.Clone());
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.ToString(), "Loading Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         //</initialization>
 
@@ -160,6 +198,12 @@ namespace _4UFinal
             if (portrait) TextPortrait.Source = selected.Portrait;
         }
 
+        private void PrintObject(Prop selected, bool name = true, bool description = true) // Displays on-screen information about the object
+        {
+            if (name) DialogueName.Text = selected.Name;
+            if (description) DialogueBox.Text = selected.Description;
+        }
+
         private void ClearPrint() // Removes text and images from the dialogue box
         {
             DialogueName.Text = string.Empty;
@@ -169,7 +213,7 @@ namespace _4UFinal
         //</dialogue>
 
         //<propInteraction>
-        private void PropPressed(object sender, MouseButtonEventArgs e) //
+        private void PropPressed(object sender, MouseButtonEventArgs e)  //
         {
             Image pressed = e.Source as Image;
             string parent;
@@ -181,8 +225,38 @@ namespace _4UFinal
             {
                 parent = mansion[currentRoom].South.Find(p => p.Sprite == pressed).Name;
             }
-            switch (parent)
+            switch (parent) // Interaction for all props.
             {
+                // <Room 1>
+
+
+
+                // </Room 1>
+
+                // <Room 2>
+
+
+
+                // </Room 2>
+
+                // <Room 3>
+
+
+
+                // </Room 3>
+
+                // <Room 4>
+
+
+
+                // </Room 4>
+
+                // <Room 5>
+
+
+
+                // </Room 5>
+
                 default:
                     break;
             }
@@ -263,6 +337,21 @@ namespace _4UFinal
             {
                 PrintObject(inventory[index], true, true, false);
             }
+        }
+
+        public void Prop_MouseEnter(object sender, MouseEventArgs e) // Prints description of prop when mouse hovers over it
+        {
+            Image root = e.Source as Image;
+            Prop temp;
+            if (facingNorth)
+            {
+                temp = mansion[currentRoom].North.Find(r => r.Sprite == root);
+            }
+            else
+            {
+                temp = mansion[currentRoom].South.Find(r => r.Sprite == root);
+            }
+            PrintObject(temp);
         }
 
         private void InventorySlot_MouseLeave(object sender, MouseEventArgs e) // Clears the print when hovering over nothing

@@ -16,7 +16,7 @@
                 <TextBlock x:Name="DialogueBox" Height="85" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="50" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="White"/>
                 <TextBlock x:Name="DialogueName" Height="24" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="21" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="#FFFFC500"/>
             </Canvas>
-            <Canvas x:Name="Stage" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Background="White">
+            <Canvas x:Name="Stage" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Background="White" Visibility="Visible">
             </Canvas>
             <Rectangle x:Name="NSButton" Height="61" Canvas.Top="515" Width="950" Canvas.Left="25" MouseDown="NSButton_MouseDown" Cursor="ScrollS">
                 <Rectangle.Fill>

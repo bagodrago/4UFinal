@@ -12,7 +12,7 @@ namespace _4UFinal
         // <declaration>
         private string l_name;
         private string l_desciption;
-        private BitmapImage l_portrait;
+        private readonly BitmapImage l_portrait;
         // </declaration>
 
         // <initialization>
