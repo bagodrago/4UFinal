@@ -166,7 +166,7 @@ namespace _4UFinal
                     for (int j = 0; j < room.Count(); j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
-                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0), int.Parse(tempProps[5]));
+                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
                         tempProp.Sprite.MouseEnter += Prop_MouseEnter;
                         tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
                         tempRoom.North.Add(tempProp);
@@ -175,7 +175,7 @@ namespace _4UFinal
                     for (int j = 0; j < room.Count(); j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
-                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0), int.Parse(tempProps[5]));
+                        tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
 
                         tempRoom.South.Add(tempProp);
                     }
