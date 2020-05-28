@@ -25,6 +25,7 @@ namespace _4UFinal
         static List<BitmapImage> assets = new List<BitmapImage>() { }; // Static assets (do not change during the game)
         static List<BitmapImage> props = new List<BitmapImage>() { }; // Character portraits for text box
         static List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
+        static List<BitmapImage> backgrounds = new List<BitmapImage>() { }; // Holds the backgrounds for the stage
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
         // </RO Variables>
 
@@ -50,6 +51,7 @@ namespace _4UFinal
             assets = LoadImages(@".\img\assets");
             props = LoadImages(@".\img\props");
             items = LoadImages(@".\img\items");
+            backgrounds = LoadImages(@".\img\background");
             // </loadFiles>
             // <tiling> - Creates tiling background
             bk = new ImageBrush(assets[0])
@@ -116,6 +118,7 @@ namespace _4UFinal
                     Stage.Children.Add(prop.Sprite);
                 }
             }
+            Stage.Background = new ImageBrush() { ImageSource = backgrounds[currentRoom] };
         }
 
         //<initialization>
