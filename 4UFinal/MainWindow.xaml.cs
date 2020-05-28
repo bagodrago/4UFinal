@@ -42,6 +42,14 @@ namespace _4UFinal
         int currentRoom = 0;
         Item selectedItem; // The item that appears in the item slot
         bool facingNorth = true; // Which direction the player faces.
+        List<bool> conditions = new List<bool>() //Events triggers
+        {
+            false, // Red keycard picked up
+            false, // Door 0-1 unlocked
+            false,
+            false,
+            false
+        };
         // </RW Variables>
 
         public MainWindow()
@@ -207,6 +215,12 @@ namespace _4UFinal
             if (description) DialogueBox.Text = selected.Description;
         }
 
+        private void PrintText(string dialogue)
+        {
+            ClearPrint();
+            DialogueBox.Text = dialogue;
+        }
+
         private void ClearPrint() // Removes text and images from the dialogue box
         {
             DialogueName.Text = string.Empty;
@@ -228,36 +242,61 @@ namespace _4UFinal
             {
                 parent = mansion[currentRoom].South.Find(p => p.Sprite == pressed).Name;
             }
-            switch (parent) // Interaction for all props.
+            switch (currentRoom) // Interaction for all props.
             {
                 // <Room 1>
-
-
-
+                case 0:
+                    switch (parent)
+                    {
+                        case "Card Reader":
+                            if (selectedItem.Name == "Red Card")
+                            {
+                                inventory.Remove(inventory.Find((r => r.Name == "Red Card")));
+                                PrintText("Nice! The door unlocked!");
+                                conditions[1] = true;
+                                mansion[0].North.Find((r => r.Name == "Card Reader")).Sprite.Source = props[3];
+                                mansion[0].North.Find((r => r.Name == "Card Reader")).Description = "Looks like the door is unlocked now.";
+                                mansion[0].North.Find((r => r.Name == "Door")).Description = "This door leads to a new room.";
+                            }
+                            break;
+                    }
+                    break;
                 // </Room 1>
 
                 // <Room 2>
+                case 1:
+                    switch (parent)
+                    {
 
-
-
+                    }
+                    break;
                 // </Room 2>
 
                 // <Room 3>
+                case 2:
+                    switch (parent)
+                    {
 
-
-
+                    }
+                    break;
                 // </Room 3>
 
                 // <Room 4>
+                case 3:
+                    switch (parent)
+                    {
 
-
-
+                    }
+                    break;
                 // </Room 4>
 
                 // <Room 5>
+                case 4:
+                    switch (parent)
+                    {
 
-
-
+                    }
+                    break;
                 // </Room 5>
 
                 default:
