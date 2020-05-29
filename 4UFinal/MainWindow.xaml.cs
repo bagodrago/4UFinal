@@ -27,6 +27,7 @@ namespace _4UFinal
         static List<BitmapImage> items = new List<BitmapImage>() { }; // Item portraits for text box
         static List<BitmapImage> backgrounds = new List<BitmapImage>() { }; // Holds the backgrounds for the stage
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
+        List<Item> itemDB = new List<Item>() { }; // A database of all items to refer to when adding to inventory.
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
@@ -42,15 +43,16 @@ namespace _4UFinal
         int currentRoom = 0;
         Item selectedItem; // The item that appears in the item slot
         bool facingNorth = true; // Which direction the player faces.
+        // </RW Variables>
+        
         List<bool> conditions = new List<bool>() //Events triggers
         {
-            false, // Red keycard picked up
-            false, // Door 0-1 unlocked
-            false,
+            false, // [0] Red keycard picked up
+            false, // [1] Door 0-1 unlocked
+            false, // [2] Door 0-1 entered
             false,
             false
         };
-        // </RW Variables>
 
         public MainWindow()
         {
@@ -80,11 +82,13 @@ namespace _4UFinal
             //<initializeSystems>
             CreateInventory();
             CreateMansion();
+            CreateItemDB();
             ClearPrint();
             RefreshStage();
             // </initializeSystems>
             // <debugging>
-            inventory.Add(new Item("Stopwatch", "It tells the time. I keep it in my back pocket.", items[1], new BitmapImage()));
+            inventory.Add(itemDB[0]);
+            inventory.Add(itemDB[1]);
             // </debugging>
         }
 
@@ -114,19 +118,35 @@ namespace _4UFinal
             Stage.Children.Clear();
             if (facingNorth)
             {
-                foreach (Prop prop in mansion[currentRoom].North)
+                for (int i = 0; i < mansion[currentRoom].North.Count(); i++)
                 {
-                    Stage.Children.Add(prop.Sprite);
+                    Stage.Children.Add(mansion[currentRoom].North[i].Sprite);
                 }
             }
             else
             {
-                foreach (Prop prop in mansion[currentRoom].South)
+                for (int i = 0; i < mansion[currentRoom].South.Count(); i++)
                 {
-                    Stage.Children.Add(prop.Sprite);
+                    Stage.Children.Add(mansion[currentRoom].South[i].Sprite);
                 }
             }
             Stage.Background = new ImageBrush() { ImageSource = backgrounds[currentRoom] };
+        }
+
+        private void RefreshItem()
+        {
+            selectedItem = null;
+            ItemBox.Source = items[0];
+        }
+
+        private void RefreshProp(int room, string name, BitmapImage newImage)
+        {
+            mansion[room].North.Find((r => r.Name == name)).Sprite.Source = newImage;
+        }
+
+        private void RefreshProp(int room, string name, string newDescription)
+        {
+            mansion[room].North.Find((r => r.Name == name)).Description = newDescription;
         }
 
         //<initialization>
@@ -174,24 +194,46 @@ namespace _4UFinal
                 for (int i = 0; i < 6; i++)
                 {
                     room = File.ReadAllLines(@".\rooms\north\" + i + ".txt");
-                    for (int j = 0; j < room.Count(); j++)
+                    for (int j = 0; j < room.Length; j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
                         tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
                         tempProp.Sprite.MouseEnter += Prop_MouseEnter;
                         tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
+                        tempProp.Sprite.MouseDown += PropPressed;
                         tempRoom.North.Add(tempProp);
                     }
                     room = File.ReadAllLines(@".\rooms\south\" + i + ".txt");
-                    for (int j = 0; j < room.Count(); j++)
+                    for (int j = 0; j < room.Length; j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
                         tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
-
+                        tempProp.Sprite.MouseEnter += Prop_MouseEnter;
+                        tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
                         tempRoom.South.Add(tempProp);
                     }
 
                     mansion.Add(tempRoom.Clone());
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.ToString(), "Loading Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CreateItemDB()
+        {
+            string[] tempLine;
+            Item tempItem;
+            try
+            {
+                string[] lines = File.ReadAllLines(@".\db\items.txt");
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    tempLine = lines[i].Split('>'); // Name>Description>Source
+                    tempItem = new Item(tempLine[0], tempLine[1], items[int.Parse(tempLine[2])]);
+                    itemDB.Add(tempItem);
                 }
             }
             catch (Exception err)
@@ -251,12 +293,22 @@ namespace _4UFinal
                         case "Card Reader":
                             if (selectedItem.Name == "Red Card")
                             {
-                                inventory.Remove(inventory.Find((r => r.Name == "Red Card")));
+                                inventory.Remove(inventory.Find((r => r == itemDB[0])));
                                 PrintText("Nice! The door unlocked!");
                                 conditions[1] = true;
-                                mansion[0].North.Find((r => r.Name == "Card Reader")).Sprite.Source = props[3];
-                                mansion[0].North.Find((r => r.Name == "Card Reader")).Description = "Looks like the door is unlocked now.";
-                                mansion[0].North.Find((r => r.Name == "Door")).Description = "This door leads to a new room.";
+                                RefreshProp(0, "Card Reader", props[3]);
+                                RefreshProp(0, "Card Reader", "Looks like the door is unlocked now.");
+                                RefreshProp(0, "Door", "This door leads to a new room.");
+                                RefreshItem();
+                            }
+                            break;
+                        case "Sofa Chair":
+                            if (!conditions[0])
+                            {
+                                inventory.Add(itemDB[0]);
+                                PrintText("Hey, there was a keycard under the cushion!");
+                                conditions[0] = true;
+                                RefreshProp(0, "Sofa Chair", "This chair looks pretty comfortable.");
                             }
                             break;
                     }

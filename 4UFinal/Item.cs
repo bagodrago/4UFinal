@@ -16,7 +16,7 @@ namespace _4UFinal
         // </declaration>
 
         // <initialization>
-        public Item(string name, string description, BitmapImage portrait, BitmapImage sprite)
+        public Item(string name, string description, BitmapImage portrait)
         {
             l_name = name;
             l_desciption = description;
