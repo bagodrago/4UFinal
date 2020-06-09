@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.IO;
 
 namespace _4UFinal
@@ -28,6 +29,7 @@ namespace _4UFinal
         static List<BitmapImage> backgrounds = new List<BitmapImage>() { }; // Holds the backgrounds for the stage
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
         List<Item> itemDB = new List<Item>() { }; // A database of all items to refer to when adding to inventory.
+        //DispatcherTimer timer = new DispatcherTimer(); // Timer used strictly for delay.
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
@@ -36,7 +38,9 @@ namespace _4UFinal
         public bool changingInventory = false; // Is the inventory menu currently being opened?
         public bool changingItemslot = false; // Is an item currently being selected?
         public bool changingRoom = false; // Is the stage switching between rooms?
+        public bool pressingProp = false; // Is a PropPressed event currently being called?
         ImageBrush bk = new ImageBrush(); // TileBrush for the background
+        object downOn = null;
 
         List<Item> inventory = new List<Item>() {}; // Inventory
         List<Room> mansion = new List<Room>() {}; // All rooms in the game
@@ -86,8 +90,13 @@ namespace _4UFinal
             ClearPrint();
             RefreshStage();
             // </initializeSystems>
+            // <timer>
+            //timer.Interval = TimeSpan.FromMilliseconds(40);
+            //timer.Tick += TimerTick;
+            // </timer>
             // <debugging>
-            //inventory.Add(itemDB[0]);
+            inventory.Add(itemDB[1]);
+            conditions[1] = true;
             // </debugging>
         }
 
@@ -132,7 +141,8 @@ namespace _4UFinal
             Stage.Background = new ImageBrush() { ImageSource = backgrounds[currentRoom] };
             for (int i = 0; i < Stage.Children.Count; i++)
             {
-                Stage.Children[i].MouseDown += PropPressed;
+                Stage.Children[i].MouseLeftButtonDown += PropPressed;
+                Stage.Children[i].MouseLeftButtonUp += MouseButtonUp;
             }
         }
 
@@ -154,6 +164,20 @@ namespace _4UFinal
             else mansion[room].South.Find((r => r.Name == name)).Description = newDescription;
         }
 
+        //<timer>
+        /*private void TimerTick(object sender, EventArgs e)
+        {
+            counter++;
+        }
+
+        private void Wait(int time)
+        {
+            timer.Start();
+            while (counter < time) { }
+            timer.Stop();
+        }*/
+        //</timer>
+
         //<initialization>
         private void CreateInventory() // Initializes inventory slots
         {
@@ -171,7 +195,8 @@ namespace _4UFinal
                         Margin = new Thickness(tempX, tempY, 0, 0),
                         Cursor = Cursors.Hand
                     };
-                    img.MouseDown += InventorySlot_MouseDown;
+                    img.MouseLeftButtonDown += InventorySlot_MouseDown;
+                    img.MouseLeftButtonUp += MouseButtonUp;
                     img.MouseEnter += InventorySlot_MouseEnter;
                     img.MouseLeave += InventorySlot_MouseLeave;
                     invSlots.Add(img);
@@ -195,9 +220,9 @@ namespace _4UFinal
             Prop tempProp;
             try
             {
-                tempRoom = new Room(new List<Prop>(), new List<Prop>());
                 for (int i = 0; i < 6; i++)
                 {
+                    tempRoom = new Room(new List<Prop>(), new List<Prop>());
                     room = File.ReadAllLines(@".\rooms\north\" + i + ".txt");
                     for (int j = 0; j < room.Length; j++)
                     {
@@ -205,7 +230,8 @@ namespace _4UFinal
                         tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
                         tempProp.Sprite.MouseEnter += Prop_MouseEnter;
                         tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
-                        tempProp.Sprite.MouseDown += PropPressed;
+                        tempProp.Sprite.MouseLeftButtonDown += PropPressed;
+                        tempProp.Sprite.MouseLeftButtonUp += MouseButtonUp;
                         tempRoom.North.Add(tempProp);
                     }
                     room = File.ReadAllLines(@".\rooms\south\" + i + ".txt");
@@ -279,86 +305,109 @@ namespace _4UFinal
         //<propInteraction>
         private void PropPressed(object sender, MouseButtonEventArgs e)  //
         {
-            Image pressed = e.Source as Image;
-            string parent;
-            if (facingNorth)
+            if (downOn == sender)
             {
-                parent = mansion[currentRoom].North.Find(p => p.Sprite == pressed).Name;
-            }
-            else
-            {
-                parent = mansion[currentRoom].South.Find(p => p.Sprite == pressed).Name;
-            }
-            switch (currentRoom) // Interaction for all props.
-            {
-                // <Room 1>
-                case 0:
-                    switch (parent)
+                if (!pressingProp)
+                {
+                    pressingProp = true;
+                    Image pressed = e.Source as Image;
+                    string parent;
+                    if (facingNorth)
                     {
-                        case "Card Reader":
-                            if (selectedItem.Name == "Red Card")
+                        parent = mansion[currentRoom].North.Find(p => p.Sprite == pressed).Name;
+                    }
+                    else
+                    {
+                        parent = mansion[currentRoom].South.Find(p => p.Sprite == pressed).Name;
+                    }
+                    switch (currentRoom) // Interaction for all props.
+                    {
+                        // <Room 1>
+                        case 0:
+                            switch (parent)
                             {
-                                inventory.Remove(inventory.Find((r => r == itemDB[1])));
-                                PrintText("Nice! The door unlocked!");
-                                conditions[1] = true;
-                                RefreshProp(0, true, "Card Reader", props[3]);
-                                RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.");
-                                RefreshProp(0, true, "Door", "This door leads to a new room.");
-                                RefreshItem();
+                                case "Card Reader":
+                                    if (selectedItem.Name == "Red Card")
+                                    {
+                                        inventory.Remove(inventory.Find((r => r == itemDB[1])));
+                                        PrintText("Nice! The door unlocked!");
+                                        conditions[1] = true;
+                                        RefreshProp(0, true, "Card Reader", props[3]);
+                                        RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.");
+                                        RefreshProp(0, true, "Door", "This door leads to a new room.");
+                                        RefreshItem();
+                                    }
+                                    break;
+                                case "Sofa Chair":
+                                    if (!conditions[0])
+                                    {
+                                        inventory.Add(itemDB[1]);
+                                        PrintText("Hey, there was a keycard under the cushion!");
+                                        conditions[0] = true;
+                                        RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
+                                    }
+                                    break;
+                                case "Door":
+                                    if (conditions[1])
+                                    {
+                                        changingRoom = true;
+                                        if (!conditions[2])
+                                        {
+                                            RefreshProp(0, true, "Door", "This door leads to the lobby.");
+                                            conditions[2] = true;
+                                        }
+                                        currentRoom = 1;
+                                        RefreshStage();
+                                        changingRoom = false;
+                                    }
+                                    break;
                             }
                             break;
-                        case "Sofa Chair":
-                            if (!conditions[0])
+                        // </Room 1>
+
+                        // <Room 2>
+                        case 1:
+                            switch (parent)
                             {
-                                inventory.Add(itemDB[1]);
-                                PrintText("Hey, there was a keycard under the cushion!");
-                                conditions[0] = true;
-                                RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
+
                             }
                             break;
+                        // </Room 2>
+
+                        // <Room 3>
+                        case 2:
+                            switch (parent)
+                            {
+
+                            }
+                            break;
+                        // </Room 3>
+
+                        // <Room 4>
+                        case 3:
+                            switch (parent)
+                            {
+
+                            }
+                            break;
+                        // </Room 4>
+
+                        // <Room 5>
+                        case 4:
+                            switch (parent)
+                            {
+
+                            }
+                            break;
+                        // </Room 5>
+
+                        default:
+                            break;
                     }
-                    break;
-                // </Room 1>
-
-                // <Room 2>
-                case 1:
-                    switch (parent)
-                    {
-
-                    }
-                    break;
-                // </Room 2>
-
-                // <Room 3>
-                case 2:
-                    switch (parent)
-                    {
-
-                    }
-                    break;
-                // </Room 3>
-
-                // <Room 4>
-                case 3:
-                    switch (parent)
-                    {
-
-                    }
-                    break;
-                // </Room 4>
-
-                // <Room 5>
-                case 4:
-                    switch (parent)
-                    {
-
-                    }
-                    break;
-                // </Room 5>
-
-                default:
-                    break;
+                    pressingProp = false;
+                }
             }
+            downOn = null;
         }
         //</propInteraction>
 
@@ -390,38 +439,46 @@ namespace _4UFinal
 
         private void ItemBox_MouseDown(object sender, MouseButtonEventArgs e) // Opens and closes the inventory menu
         {
-            if (!changingInventory)
+            if (downOn == sender)
             {
-                changingInventory = true;
-                ShowHide(InventoryCanvas);
-                for (int i = 0; i < 15; i++)
+                if (!changingInventory)
                 {
-                    if (i < inventory.Count) invSlots[i].Source = inventory[i].Portrait;
-                    else invSlots[i].Source = items[0];
+                    changingInventory = true;
+                    ShowHide(InventoryCanvas);
+                    for (int i = 0; i < 15; i++)
+                    {
+                        if (i < inventory.Count) invSlots[i].Source = inventory[i].Portrait;
+                        else invSlots[i].Source = items[0];
+                    }
+                    changingInventory = false;
                 }
-                changingInventory = false;
             }
+            downOn = null;
         }
 
         private void InventorySlot_MouseDown(object sender, MouseButtonEventArgs e) // Event handler for clicking each inventory slot
         {
-            if (!changingItemslot)
+            if (downOn == sender)
             {
-                changingItemslot = true;
-                Image root = e.Source as Image;
-                int index = invSlots.FindIndex((r => r == root));
-                if (index > inventory.Count() - 1)
+                if (!changingItemslot)
                 {
-                    selectedItem = new Item();
+                    changingItemslot = true;
+                    Image root = e.Source as Image;
+                    int index = invSlots.FindIndex((r => r == root));
+                    if (index > inventory.Count() - 1)
+                    {
+                        selectedItem = new Item();
+                    }
+                    else
+                    {
+                        selectedItem = inventory[index];
+                    }
+                    ItemBox.Source = (selectedItem.Name == "" ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
+                    ShowHide(InventoryCanvas);
+                    changingItemslot = false;
                 }
-                else
-                {
-                    selectedItem = inventory[index];
-                }
-                ItemBox.Source = (selectedItem.Name == "" ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
-                ShowHide(InventoryCanvas);
-                changingItemslot = false;
             }
+            downOn = null;
         }
 
         private void InventorySlot_MouseEnter(object sender, MouseEventArgs e) // Prints description and name of object the mouse is hovering over
@@ -460,15 +517,20 @@ namespace _4UFinal
 
         private void NSButton_MouseDown(object sender, MouseButtonEventArgs e) // Switches between north and south facing
         {
-            if (!changingRoom)
+            if (downOn == sender)
             {
-                changingRoom = true;
-                facingNorth = !facingNorth;
-                RefreshStage();
-                changingRoom = false;
+                if (!changingRoom)
+                {
+                    changingRoom = true;
+                    facingNorth = !facingNorth;
+                    RefreshStage();
+                    changingRoom = false;
+                }
             }
+            downOn = null;
         }
 
+        private void MouseButtonUp(object sender, MouseButtonEventArgs e) { downOn = sender; }
         //</events>
     }
 }
