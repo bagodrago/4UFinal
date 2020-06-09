@@ -41,7 +41,7 @@ namespace _4UFinal
         List<Item> inventory = new List<Item>() {}; // Inventory
         List<Room> mansion = new List<Room>() {}; // All rooms in the game
         int currentRoom = 0;
-        Item selectedItem; // The item that appears in the item slot
+        Item selectedItem = new Item(); // The item that appears in the item slot
         bool facingNorth = true; // Which direction the player faces.
         // </RW Variables>
         
@@ -87,8 +87,7 @@ namespace _4UFinal
             RefreshStage();
             // </initializeSystems>
             // <debugging>
-            inventory.Add(itemDB[0]);
-            inventory.Add(itemDB[1]);
+            //inventory.Add(itemDB[0]);
             // </debugging>
         }
 
@@ -131,6 +130,10 @@ namespace _4UFinal
                 }
             }
             Stage.Background = new ImageBrush() { ImageSource = backgrounds[currentRoom] };
+            for (int i = 0; i < Stage.Children.Count; i++)
+            {
+                Stage.Children[i].MouseDown += PropPressed;
+            }
         }
 
         private void RefreshItem()
@@ -139,14 +142,16 @@ namespace _4UFinal
             ItemBox.Source = items[0];
         }
 
-        private void RefreshProp(int room, string name, BitmapImage newImage)
+        private void RefreshProp(int room, bool north, string name, BitmapImage newImage)
         {
-            mansion[room].North.Find((r => r.Name == name)).Sprite.Source = newImage;
+            if (north) mansion[room].North.Find((r => r.Name == name)).Sprite.Source = newImage;
+            else mansion[room].South.Find((r => r.Name == name)).Sprite.Source = newImage;
         }
 
-        private void RefreshProp(int room, string name, string newDescription)
+        private void RefreshProp(int room, bool north, string name, string newDescription)
         {
-            mansion[room].North.Find((r => r.Name == name)).Description = newDescription;
+            if (north) mansion[room].North.Find((r => r.Name == name)).Description = newDescription;
+            else mansion[room].South.Find((r => r.Name == name)).Description = newDescription;
         }
 
         //<initialization>
@@ -296,20 +301,26 @@ namespace _4UFinal
                                 inventory.Remove(inventory.Find((r => r == itemDB[0])));
                                 PrintText("Nice! The door unlocked!");
                                 conditions[1] = true;
-                                RefreshProp(0, "Card Reader", props[3]);
-                                RefreshProp(0, "Card Reader", "Looks like the door is unlocked now.");
-                                RefreshProp(0, "Door", "This door leads to a new room.");
+                                RefreshProp(0, true, "Card Reader", props[3]);
+                                RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.");
+                                RefreshProp(0, true, "Door", "This door leads to a new room.");
                                 RefreshItem();
                             }
                             break;
                         case "Sofa Chair":
+                            inventory.Add(itemDB[1]);
+                            PrintText("Hey, there was a keycard under the cushion!");
+                            conditions[0] = true;
+                            RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
+                            /*
                             if (!conditions[0])
                             {
-                                inventory.Add(itemDB[0]);
+                                inventory.Add(itemDB[1]);
                                 PrintText("Hey, there was a keycard under the cushion!");
                                 conditions[0] = true;
                                 RefreshProp(0, "Sofa Chair", "This chair looks pretty comfortable.");
                             }
+                            */
                             break;
                     }
                     break;
@@ -413,7 +424,7 @@ namespace _4UFinal
                 {
                     selectedItem = inventory[index];
                 }
-                ItemBox.Source = (selectedItem == new Item() ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
+                ItemBox.Source = (selectedItem.Name == "" ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
                 ShowHide(InventoryCanvas);
                 changingItemslot = false;
             }
