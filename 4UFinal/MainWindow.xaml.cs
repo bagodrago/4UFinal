@@ -135,7 +135,7 @@ namespace _4UFinal
 
         private void RefreshItem()
         {
-            selectedItem = null;
+            selectedItem = new Item();
             ItemBox.Source = items[0];
         }
 
@@ -407,13 +407,13 @@ namespace _4UFinal
                 int index = invSlots.FindIndex((r => r == root));
                 if (index > inventory.Count() - 1)
                 {
-                    selectedItem = null;
+                    selectedItem = new Item();
                 }
                 else
                 {
                     selectedItem = inventory[index];
                 }
-                ItemBox.Source = (selectedItem == null ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
+                ItemBox.Source = (selectedItem == new Item() ? items[0] : selectedItem.Portrait); // If there is nothing selected, the item slot is empty
                 ShowHide(InventoryCanvas);
                 changingItemslot = false;
             }

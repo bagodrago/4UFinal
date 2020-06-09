@@ -22,6 +22,13 @@ namespace _4UFinal
             l_desciption = description;
             l_portrait = portrait;
         }
+
+        public Item()
+        {
+            l_name = string.Empty;
+            l_desciption = string.Empty;
+            l_portrait = new BitmapImage();
+        }
         // </initialization>
 
         // <get-sets>
