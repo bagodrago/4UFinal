@@ -298,7 +298,7 @@ namespace _4UFinal
                         case "Card Reader":
                             if (selectedItem.Name == "Red Card")
                             {
-                                inventory.Remove(inventory.Find((r => r == itemDB[0])));
+                                inventory.Remove(inventory.Find((r => r == itemDB[1])));
                                 PrintText("Nice! The door unlocked!");
                                 conditions[1] = true;
                                 RefreshProp(0, true, "Card Reader", props[3]);
@@ -308,19 +308,13 @@ namespace _4UFinal
                             }
                             break;
                         case "Sofa Chair":
-                            inventory.Add(itemDB[1]);
-                            PrintText("Hey, there was a keycard under the cushion!");
-                            conditions[0] = true;
-                            RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
-                            /*
                             if (!conditions[0])
                             {
                                 inventory.Add(itemDB[1]);
                                 PrintText("Hey, there was a keycard under the cushion!");
                                 conditions[0] = true;
-                                RefreshProp(0, "Sofa Chair", "This chair looks pretty comfortable.");
+                                RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
                             }
-                            */
                             break;
                     }
                     break;
