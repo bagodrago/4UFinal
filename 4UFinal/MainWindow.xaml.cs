@@ -191,7 +191,7 @@ namespace _4UFinal
             if (!changingRoom)
             {
                 changingRoom = true;
-                currentRoom = 0;
+                currentRoom = roomNumber;
                 RefreshStage();
                 changingRoom = false;
             }
@@ -402,18 +402,18 @@ namespace _4UFinal
                                 case "E Door":
                                     if (!conditions[3])
                                     {
-                                        RefreshProp(1, true, "E Door", "This door leads to the lobby.");
-                                        conditions[2] = true;
+                                        RefreshProp(1, true, "E Door", "This door leads to the ???.");
+                                        conditions[3] = true;
                                     }
                                     Warp(2);
                                     break;
                                 case "W Door":
                                     if (!conditions[4])
                                     {
-                                        RefreshProp(1, true, "W Door", "This door leads to the lobby.");
+                                        RefreshProp(1, true, "W Door", "This door leads to the mudroom.");
                                         conditions[4] = true;
                                     }
-                                    Warp(1);
+                                    Warp(4);
                                     break;
                                 case "S Door":
                                     Warp(0);
