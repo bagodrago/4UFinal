@@ -54,7 +54,8 @@ namespace _4UFinal
             false, // [0] Red keycard picked up
             false, // [1] Door 0-1 unlocked
             false, // [2] Door 0-1 entered
-            false,
+            false, // [3] Door 1-2 entered
+            false, // [4] Door 1-4 entered
             false
         };
 
@@ -183,6 +184,17 @@ namespace _4UFinal
         {
             inventory.Remove(inventory.Find((r => r == oldItem)));
             RefreshItem();
+        }
+
+        private void Warp(int roomNumber) // Changes the room the player is in.
+        {
+            if (!changingRoom)
+            {
+                changingRoom = true;
+                currentRoom = 0;
+                RefreshStage();
+                changingRoom = false;
+            }
         }
 
         //<timer>
@@ -353,8 +365,7 @@ namespace _4UFinal
                                         RemoveItem(itemDB[1]);
                                         PrintText("Nice! The door unlocked!");
                                         conditions[1] = true;
-                                        RefreshProp(0, true, "Card Reader", props[6]);
-                                        RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.");
+                                        RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.", props[6]);
                                         RefreshProp(0, true, "Door", "This door leads to a new room.");
                                     }
                                     break;
@@ -370,15 +381,12 @@ namespace _4UFinal
                                 case "Door":
                                     if (conditions[1])
                                     {
-                                        changingRoom = true;
                                         if (!conditions[2])
                                         {
                                             RefreshProp(0, true, "Door", "This door leads to the lobby.");
                                             conditions[2] = true;
                                         }
-                                        currentRoom = 1;
-                                        RefreshStage();
-                                        changingRoom = false;
+                                        Warp(1);
                                     }
                                     break;
                             }
@@ -389,7 +397,26 @@ namespace _4UFinal
                         case 1:
                             switch (parent)
                             {
-                                default:
+                                case "N Door":
+                                    break;
+                                case "E Door":
+                                    if (!conditions[3])
+                                    {
+                                        RefreshProp(1, true, "E Door", "This door leads to the lobby.");
+                                        conditions[2] = true;
+                                    }
+                                    Warp(2);
+                                    break;
+                                case "W Door":
+                                    if (!conditions[4])
+                                    {
+                                        RefreshProp(1, true, "W Door", "This door leads to the lobby.");
+                                        conditions[4] = true;
+                                    }
+                                    Warp(1);
+                                    break;
+                                case "S Door":
+                                    Warp(0);
                                     break;
                             }
                             break;
