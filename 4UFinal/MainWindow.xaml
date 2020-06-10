@@ -12,13 +12,13 @@
         <Canvas x:Name="InnerScreen" HorizontalAlignment="Center" Height="800" Margin="0" VerticalAlignment="Center" Width="1000" Background="Black">
             <Canvas x:Name="TextCanvas" Height="150" Canvas.Left="25" Canvas.Top="625" Width="950" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Image x:Name="TextPortrait" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="5"/>
-                <Image x:Name="ItemBox" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="805" MouseLeftButtonDown="ItemBox_MouseDown" MouseLeftButtonUp="MouseButtonUp" Cursor="Hand"/>
+                <Image x:Name="ItemBox" Height="140" Width="140" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="5" Canvas.Left="805" MouseLeftButtonUp="ItemBox_MouseDown" MouseLeftButtonDown="MouseButtonDown" Cursor="Hand"/>
                 <TextBlock x:Name="DialogueBox" Height="85" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="50" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="White"/>
                 <TextBlock x:Name="DialogueName" Height="24" Canvas.Left="170" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="21" Width="590" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Georgia" FontSize="20" Foreground="#FFFFC500"/>
             </Canvas>
             <Canvas x:Name="Stage" Height="550" Canvas.Left="25" Canvas.Top="25" Width="950" Background="White" Visibility="Visible">
             </Canvas>
-            <Rectangle x:Name="NSButton" Height="61" Canvas.Top="515" Width="950" Canvas.Left="25" MouseLeftButtonDown="NSButton_MouseDown" MouseLeftButtonUp="MouseButtonUp" Cursor="ScrollS">
+            <Rectangle x:Name="NSButton" Height="61" Canvas.Top="515" Width="950" Canvas.Left="25" MouseLeftButtonUp="NSButton_MouseDown" MouseLeftButtonDown="MouseButtonDown" Cursor="ScrollS">
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="Black" Offset="1"/>

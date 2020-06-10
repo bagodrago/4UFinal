@@ -141,8 +141,8 @@ namespace _4UFinal
             Stage.Background = new ImageBrush() { ImageSource = backgrounds[currentRoom] };
             for (int i = 0; i < Stage.Children.Count; i++)
             {
-                Stage.Children[i].MouseLeftButtonDown += PropPressed;
-                Stage.Children[i].MouseLeftButtonUp += MouseButtonUp;
+                Stage.Children[i].MouseLeftButtonUp += PropPressed;
+                Stage.Children[i].MouseLeftButtonDown += MouseButtonDown;
             }
         }
 
@@ -195,8 +195,8 @@ namespace _4UFinal
                         Margin = new Thickness(tempX, tempY, 0, 0),
                         Cursor = Cursors.Hand
                     };
-                    img.MouseLeftButtonDown += InventorySlot_MouseDown;
-                    img.MouseLeftButtonUp += MouseButtonUp;
+                    img.MouseLeftButtonUp += InventorySlot_MouseDown;
+                    img.MouseLeftButtonDown += MouseButtonDown;
                     img.MouseEnter += InventorySlot_MouseEnter;
                     img.MouseLeave += InventorySlot_MouseLeave;
                     invSlots.Add(img);
@@ -230,8 +230,8 @@ namespace _4UFinal
                         tempProp = new Prop(tempProps[0], tempProps[1], props[int.Parse(tempProps[2])], new Thickness(int.Parse(tempProps[3]), int.Parse(tempProps[4]), 0, 0));
                         tempProp.Sprite.MouseEnter += Prop_MouseEnter;
                         tempProp.Sprite.MouseLeave += InventorySlot_MouseLeave;
-                        tempProp.Sprite.MouseLeftButtonDown += PropPressed;
-                        tempProp.Sprite.MouseLeftButtonUp += MouseButtonUp;
+                        tempProp.Sprite.MouseLeftButtonUp += PropPressed;
+                        tempProp.Sprite.MouseLeftButtonDown += MouseButtonDown;
                         tempRoom.North.Add(tempProp);
                     }
                     room = File.ReadAllLines(@".\rooms\south\" + i + ".txt");
@@ -369,7 +369,8 @@ namespace _4UFinal
                         case 1:
                             switch (parent)
                             {
-
+                                default:
+                                    break;
                             }
                             break;
                         // </Room 2>
@@ -378,7 +379,8 @@ namespace _4UFinal
                         case 2:
                             switch (parent)
                             {
-
+                                default:
+                                    break;
                             }
                             break;
                         // </Room 3>
@@ -387,7 +389,8 @@ namespace _4UFinal
                         case 3:
                             switch (parent)
                             {
-
+                                default:
+                                    break;
                             }
                             break;
                         // </Room 4>
@@ -396,7 +399,8 @@ namespace _4UFinal
                         case 4:
                             switch (parent)
                             {
-
+                                default:
+                                    break;
                             }
                             break;
                         // </Room 5>
@@ -530,7 +534,7 @@ namespace _4UFinal
             downOn = null;
         }
 
-        private void MouseButtonUp(object sender, MouseButtonEventArgs e) { downOn = sender; }
+        private void MouseButtonDown(object sender, MouseButtonEventArgs e) { downOn = sender; } // All objects that are moused down must also be moused up.
         //</events>
     }
 }
