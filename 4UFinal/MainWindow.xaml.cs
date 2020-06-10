@@ -95,8 +95,7 @@ namespace _4UFinal
             //timer.Tick += TimerTick;
             // </timer>
             // <debugging>
-            inventory.Add(itemDB[1]);
-            conditions[1] = true;
+
             // </debugging>
         }
 
@@ -150,9 +149,9 @@ namespace _4UFinal
         {
             selectedItem = new Item();
             ItemBox.Source = items[0];
-        }
+        } // Empties the player's hand
 
-        private void RefreshProp(int room, bool north, string name, BitmapImage newImage)
+        private void RefreshProp(int room, bool north, string name, BitmapImage newImage) // Edits description or image of a prop
         {
             if (north) mansion[room].North.Find((r => r.Name == name)).Sprite.Source = newImage;
             else mansion[room].South.Find((r => r.Name == name)).Sprite.Source = newImage;
@@ -162,6 +161,28 @@ namespace _4UFinal
         {
             if (north) mansion[room].North.Find((r => r.Name == name)).Description = newDescription;
             else mansion[room].South.Find((r => r.Name == name)).Description = newDescription;
+        }
+
+        private void RefreshProp(int room, bool north, string name, string newDescription, BitmapImage newImage)
+        {
+            Prop tempProp;
+            if (north) tempProp = mansion[room].North.Find((r => r.Name == name));
+            else tempProp = mansion[room].South.Find((r => r.Name == name));
+            tempProp.Description = newDescription;
+            tempProp.Sprite.Source = newImage;
+        }
+
+        private void AddItem(Item newItem) // Adds an item to the inventory
+        {
+            inventory.Add(itemDB[1]);
+            selectedItem = itemDB[1];
+            ItemBox.Source = itemDB[1].Portrait;
+        }
+
+        private void RemoveItem(Item oldItem) // Removes an item from the inventory
+        {
+            inventory.Remove(inventory.Find((r => r == oldItem)));
+            RefreshItem();
         }
 
         //<timer>
@@ -329,19 +350,18 @@ namespace _4UFinal
                                 case "Card Reader":
                                     if (selectedItem.Name == "Red Card")
                                     {
-                                        inventory.Remove(inventory.Find((r => r == itemDB[1])));
+                                        RemoveItem(itemDB[1]);
                                         PrintText("Nice! The door unlocked!");
                                         conditions[1] = true;
-                                        RefreshProp(0, true, "Card Reader", props[3]);
+                                        RefreshProp(0, true, "Card Reader", props[6]);
                                         RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.");
                                         RefreshProp(0, true, "Door", "This door leads to a new room.");
-                                        RefreshItem();
                                     }
                                     break;
                                 case "Sofa Chair":
                                     if (!conditions[0])
                                     {
-                                        inventory.Add(itemDB[1]);
+                                        AddItem(itemDB[1]);
                                         PrintText("Hey, there was a keycard under the cushion!");
                                         conditions[0] = true;
                                         RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
@@ -466,8 +486,8 @@ namespace _4UFinal
             {
                 if (!changingItemslot)
                 {
-                    changingItemslot = true;
                     Image root = e.Source as Image;
+                    changingItemslot = true;
                     int index = invSlots.FindIndex((r => r == root));
                     if (index > inventory.Count() - 1)
                     {
