@@ -56,6 +56,9 @@ namespace _4UFinal
             false, // [2] Door 0-1 entered
             false, // [3] Door 1-2 entered
             false, // [4] Door 1-4 entered
+            false, // [5] Torch picked up
+            false, // [6] Torch soaked
+            false, // [7] Torch lit
             false
         };
 
@@ -175,9 +178,9 @@ namespace _4UFinal
 
         private void AddItem(Item newItem) // Adds an item to the inventory
         {
-            inventory.Add(itemDB[1]);
-            selectedItem = itemDB[1];
-            ItemBox.Source = itemDB[1].Portrait;
+            inventory.Add(newItem);
+            selectedItem = newItem;
+            ItemBox.Source = newItem.Portrait;
         }
 
         private void RemoveItem(Item oldItem) // Removes an item from the inventory
@@ -365,7 +368,7 @@ namespace _4UFinal
                                         RemoveItem(itemDB[1]);
                                         PrintText("Nice! The door unlocked!");
                                         conditions[1] = true;
-                                        RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.", props[6]);
+                                        RefreshProp(0, true, "Card Reader", "Looks like the door is unlocked now.", props[8]);
                                         RefreshProp(0, true, "Door", "This door leads to a new room.");
                                     }
                                     break;
@@ -376,6 +379,15 @@ namespace _4UFinal
                                         PrintText("Hey, there was a keycard under the cushion!");
                                         conditions[0] = true;
                                         RefreshProp(0, false, "Sofa Chair", "This chair looks pretty comfortable.");
+                                    }
+                                    break;
+                                case "Fireplace":
+                                    if (selectedItem.Name == "Fuel-Soaked Torch")
+                                    {
+                                        RemoveItem(itemDB[3]);
+                                        AddItem(itemDB[4]);
+                                        PrintText("Perfect! Now I have a light!");
+                                        conditions[7] = true;
                                     }
                                     break;
                                 case "Door":
@@ -397,12 +409,21 @@ namespace _4UFinal
                         case 1:
                             switch (parent)
                             {
+                                case "Fuel Canister":
+                                    if (selectedItem.Name == "Torch")
+                                    {
+                                        RemoveItem(itemDB[2]);
+                                        AddItem(itemDB[3]);
+                                        PrintText("Nice, it worked! Now I can light it safely.");
+                                        conditions[6] = true;
+                                    }
+                                    break;
                                 case "N Door":
                                     break;
                                 case "E Door":
                                     if (!conditions[3])
                                     {
-                                        RefreshProp(1, true, "E Door", "This door leads to the ???.");
+                                        RefreshProp(1, true, "E Door", "This door leads to the library.");
                                         conditions[3] = true;
                                     }
                                     Warp(2);
@@ -426,7 +447,8 @@ namespace _4UFinal
                         case 2:
                             switch (parent)
                             {
-                                default:
+                                case "Door":
+                                    Warp(1);
                                     break;
                             }
                             break;
@@ -436,7 +458,8 @@ namespace _4UFinal
                         case 3:
                             switch (parent)
                             {
-                                default:
+                                case "Door":
+                                    Warp(2);
                                     break;
                             }
                             break;
@@ -446,11 +469,32 @@ namespace _4UFinal
                         case 4:
                             switch (parent)
                             {
-                                default:
+                                case "Left Sconce":
+                                    if (!conditions[5])
+                                    {
+                                        AddItem(itemDB[2]);
+                                        PrintText("It came loose! Maybe it'll come in handy later...");
+                                        conditions[5] = true;
+                                        RefreshProp(4, true, "Left Sconce", "This sconce is used to hold torches. You don't see those very often anymore...", props[20]);
+                                    }
+                                    break;
+                                case "Door":
+                                    Warp(1);
                                     break;
                             }
                             break;
                         // </Room 5>
+
+                        // <Room 6>
+                        case 5:
+                            switch (parent)
+                            {
+                                case "Door":
+                                    Warp(4);
+                                    break;
+                            }
+                            break;
+                        // </Room 6>
 
                         default:
                             break;
