@@ -47,8 +47,8 @@ namespace _4UFinal
         int currentRoom = 0;
         Item selectedItem = new Item(); // The item that appears in the item slot
         bool facingNorth = true; // Which direction the player faces.
-        // </RW Variables>
-        
+                                 // </RW Variables>
+
         List<bool> conditions = new List<bool>() //Events triggers
         {
             false, // [0] Red keycard picked up
@@ -74,7 +74,9 @@ namespace _4UFinal
             false, // [20] Lock A opened
             false, // [21] Lock B opened
             false, // [22] Lock C opened
-            false  // [23] Torch stored successfully
+            false, // [23] Torch stored successfully
+            false, // [24] Bottle go smash
+            false, // [25] Wine shelf exposed
         };
 
         public MainWindow()
@@ -649,6 +651,54 @@ namespace _4UFinal
                                         conditions[23] = true;
                                         PrintText("Alright, now it's time to search this room...");
                                         RefreshProp(5, false, "Sconce", "I guess if this is a wine cellar, it would make sense not to keep a torch burning down here. But, my vision is more important than the taste of this wine...", props[25]);
+                                    }
+                                    break;
+                                case "Glass Bottle":
+                                    if (selectedItem.Name == "Hammer")
+                                    {
+                                        RemoveItem(itemDB[9]);
+                                        conditions[24] = true;
+                                        PrintText("MWAHAHAHA!! Take that bottle! Hey, there's something in the pile of glass...");
+                                        RefreshProp(5, true, "Glass Bottle", "I think there may be something in that pile...", props[30]);
+                                    }
+                                    else if (conditions[24] && !conditions[17])
+                                    {
+                                        AddItem(itemDB[10]);
+                                        conditions[17] = true;
+                                        if (!conditions[19])
+                                        {
+                                            PrintText("There was a yellow keycard hidden here! But what is it for...?");
+                                            conditions[19] = true;
+                                        }
+                                        else
+                                        {
+                                            PrintText("Another yellow keycard? How many of these are there?");
+                                        }
+                                        RefreshProp(5, true, "Glass Bottle", "Well, I guess it isn't really anymore...", props[31]);
+                                    }
+                                    break;
+                                case "Wine Shelf":
+                                    if (selectedItem.Name == "Screwdriver")
+                                    {
+                                        RemoveItem(itemDB[8]);
+                                        conditions[25] = true;
+                                        PrintText("Alright, now I can use the wine shelf. Though, I don't know if I need to take any wine...");
+                                        RefreshProp(5, false, "Wine Shelf", "I think I see something stuck in between two bottles there...", props[27]);
+                                    }
+                                    else if (conditions[25] && !conditions[18])
+                                    {
+                                        AddItem(itemDB[10]);
+                                        conditions[18] = true;
+                                        if (!conditions[19])
+                                        {
+                                            PrintText("There was a yellow keycard hidden here! But what is it for...?");
+                                            conditions[19] = true;
+                                        }
+                                        else
+                                        {
+                                            PrintText("Another yellow keycard? How many of these are there?");
+                                        }
+                                        RefreshProp(5, false, "Wine Shelf", "I wonder how long this wine has been here. Probably costs a fortune now...", props[28]);
                                     }
                                     break;
                                 case "Door":
