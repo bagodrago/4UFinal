@@ -59,7 +59,22 @@ namespace _4UFinal
             false, // [5] Torch picked up
             false, // [6] Torch soaked
             false, // [7] Torch lit
-            false
+            false, // [8] Key picked up
+            false, // [9] Blue keycard picked up
+            false, // [10] Door 2-3 unlocked
+            false, // [11] Door 2-3 entered
+            false, // [12] Knife picked up
+            false, // [13] Screwdriver picked up
+            false, // [14] Hammer picked up
+            false, // [15] Door 4-5 entered
+            false, // [16] Yellow Keycard 1 found
+            false, // [17] Yellow Keycard 2 found
+            false, // [18] Yellow Keycard 3 found
+            false, // [19] A yellow keycard found
+            false, // [20] Lock A opened
+            false, // [21] Lock B opened
+            false, // [22] Lock C opened
+            false  // [23] Torch stored successfully
         };
 
         public MainWindow()
@@ -382,6 +397,10 @@ namespace _4UFinal
                                     }
                                     break;
                                 case "Fireplace":
+                                    if (selectedItem.Name == "Torch")
+                                    {
+                                        PrintText("I might be on the right track, but if I light the torch by itself, it might burn the cloth and fall apart. Maybe if I could find something to use as fuel...");
+                                    }
                                     if (selectedItem.Name == "Fuel-Soaked Torch")
                                     {
                                         RemoveItem(itemDB[3]);
@@ -418,6 +437,24 @@ namespace _4UFinal
                                         conditions[6] = true;
                                     }
                                     break;
+                                case "Painting":
+                                    if (selectedItem.Name == "Knife")
+                                    {
+                                        RemoveItem(itemDB[7]);
+                                        AddItem(itemDB[10]);
+                                        conditions[16] = true;
+                                        if (!conditions[19])
+                                        {
+                                            PrintText("There was a yellow keycard hidden here! But what is it for...?");
+                                            conditions[19] = true;
+                                        }
+                                        else
+                                        {
+                                            PrintText("Another yellow keycard? How many of these are there?");
+                                        }
+                                        RefreshProp(1, false, "Painting", "If that knife was a little sharper, that painting probably wouldn't have gotten this mangled...", props[23]);
+                                    }
+                                    break;
                                 case "N Door":
                                     break;
                                 case "E Door":
@@ -447,6 +484,36 @@ namespace _4UFinal
                         case 2:
                             switch (parent)
                             {
+                                case "Filing Cabinet":
+                                    if (selectedItem.Name == "Key")
+                                    {
+                                        RemoveItem(itemDB[5]);
+                                        AddItem(itemDB[6]);
+                                        PrintText("It opened! There's another keycard in here.");
+                                        conditions[9] = true;
+                                        RefreshProp(2, true, "Filing Cabinet", "There's nothing else in the other drawers. Seems like a waste of good storage space...");
+                                    }
+                                    break;
+                                case "Card Reader":
+                                    if (selectedItem.Name == "Blue Card")
+                                    {
+                                        RemoveItem(itemDB[6]);
+                                        PrintText("The bookshelf just opened! I guess I found a new room...");
+                                        conditions[10] = true;
+                                        RefreshProp(2, false, "Bookshelf", "This opening leads to a new room...", props[17]);
+                                    }
+                                    break;
+                                case "Bookshelf":
+                                    if (conditions[10])
+                                    {
+                                        if (!conditions[11])
+                                        {
+                                            RefreshProp(2, false, "Bookshelf", "This opening leads to the control room.");
+                                            conditions[11] = true;
+                                        }
+                                        Warp(3);
+                                    }
+                                    break;
                                 case "Door":
                                     Warp(1);
                                     break;
@@ -458,7 +525,74 @@ namespace _4UFinal
                         case 3:
                             switch (parent)
                             {
-                                case "Door":
+                                case "Toolbox":
+                                    if (!conditions[12]) //Knife
+                                    {
+                                        AddItem(itemDB[7]);
+                                        PrintText("A knife! I wonder what else is in there?");
+                                        conditions[12] = true;
+                                        RefreshProp(3, true, "Toolbox", "Looks like there's still more things in here...");
+                                    }
+                                    else if (!conditions[13]) //Screwdriver
+                                    {
+                                        AddItem(itemDB[8]);
+                                        PrintText("A screwdriver? I wonder what this is for...");
+                                        conditions[13] = true;
+                                    }
+                                    else if (!conditions[14]) //Hammer
+                                    {
+                                        AddItem(itemDB[9]);
+                                        PrintText("That's the last thing in there.");
+                                        conditions[14] = true;
+                                        RefreshProp(3, true, "Toolbox", "The toolbox is empty now. Who keeps three tools in a toolbox this big...?");
+                                    }
+                                    break;
+                                case "Card Reader A":
+                                    if (!conditions[20] && selectedItem.Name == "Yellow Card")
+                                    {
+                                        RemoveItem(itemDB[10]);
+                                        conditions[20] = true;
+                                        if (conditions[20] && conditions[21] && conditions[22])
+                                        {
+                                            PrintText("That's the last one but I didn't see anything happen. Maybe it's not in this room?");
+                                            RefreshProp(1, true, "N Door", "Hey! This door isn't locked anymore!");
+                                        }
+                                        else
+                                            PrintText("Looks like it activated but I can't tell if anything happened...");
+                                        RefreshProp(3, false, "Card Reader A", props[8]);
+                                    }
+                                    break;
+                                case "Card Reader B":
+                                    if (!conditions[21] && selectedItem.Name == "Yellow Card")
+                                    {
+                                        RemoveItem(itemDB[10]);
+                                        conditions[21] = true;
+                                        if (conditions[20] && conditions[21] && conditions[22])
+                                        {
+                                            PrintText("That's the last one but I didn't see anything happen. Maybe it's not in this room?");
+                                            RefreshProp(1, true, "N Door", "Hey! This door isn't locked anymore!");
+                                        }
+                                        else
+                                            PrintText("Looks like it activated but I can't tell if anything happened...");
+                                        RefreshProp(3, false, "Card Reader B", props[9]);
+                                    }
+                                    break;
+                                case "Card Reader C":
+                                    if (!conditions[22] && selectedItem.Name == "Yellow Card")
+                                    {
+                                        RemoveItem(itemDB[10]);
+                                        conditions[22] = true;
+                                        if (conditions[20] && conditions[21] && conditions[22])
+                                        {
+                                            PrintText("That's the last one but I didn't see anything happen. Maybe it's not in this room?");
+                                            RefreshProp(1, true, "N Door", "Hey! This door isn't locked anymore!");
+                                        }
+                                        else
+                                            PrintText("Looks like it activated but I can't tell if anything happened...");
+                                        RefreshProp(3, false, "Card Reader C", props[10]);
+                                    }
+                                    break;
+                                case "Secret Entrance":
                                     Warp(2);
                                     break;
                             }
@@ -478,6 +612,25 @@ namespace _4UFinal
                                         RefreshProp(4, true, "Left Sconce", "This sconce is used to hold torches. You don't see those very often anymore...", props[20]);
                                     }
                                     break;
+                                case "Coat Rack":
+                                    if (!conditions[8])
+                                    {
+                                        AddItem(itemDB[5]);
+                                        PrintText("There's a key in the inside pocket. I'll take that for later...");
+                                        conditions[8] = true;
+                                    }
+                                    break;
+                                case "Dark Room":
+                                    if (selectedItem.Name == "Lit Torch" || conditions[23])
+                                    {
+                                        if (!conditions[15])
+                                        {
+                                            RefreshProp(4, false, "Dark Room", "This door leads to the cellar.");
+                                            conditions[15] = true;
+                                        }
+                                        Warp(5);
+                                    }
+                                    break;
                                 case "Door":
                                     Warp(1);
                                     break;
@@ -489,6 +642,15 @@ namespace _4UFinal
                         case 5:
                             switch (parent)
                             {
+                                case "Sconce":
+                                    if (selectedItem.Name == "Lit Torch")
+                                    {
+                                        RemoveItem(itemDB[4]);
+                                        conditions[23] = true;
+                                        PrintText("Alright, now it's time to search this room...");
+                                        RefreshProp(5, false, "Sconce", "I guess if this is a wine cellar, it would make sense not to keep a torch burning down here. But, my vision is more important than the taste of this wine...", props[25]);
+                                    }
+                                    break;
                                 case "Door":
                                     Warp(4);
                                     break;
@@ -536,7 +698,11 @@ namespace _4UFinal
         {
             if (downOn == sender)
             {
-                if (!changingInventory)
+                if (conditions[23] == false && currentRoom == 5)
+                {
+                    PrintText("If I put away my torch, I'll be stuck in the dark. Maybe if I can mount it somewhere...");
+                }
+                else if (!changingInventory)
                 {
                     changingInventory = true;
                     ShowHide(InventoryCanvas);
