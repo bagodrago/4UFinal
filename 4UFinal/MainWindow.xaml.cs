@@ -29,7 +29,8 @@ namespace _4UFinal
         static List<BitmapImage> backgrounds = new List<BitmapImage>() { }; // Holds the backgrounds for the stage
         List<Image> invSlots = new List<Image>() { }; // A list of inventory slots that are parented to the inventory menu. This makes it easier to display the inventory items.
         List<Item> itemDB = new List<Item>() { }; // A database of all items to refer to when adding to inventory.
-        //DispatcherTimer timer = new DispatcherTimer(); // Timer used strictly for delay.
+        DispatcherTimer timer = new DispatcherTimer(); // Timer used strictly for delay.
+        int counter = 0;
         // </RO Variables>
 
         // <RW Variables> - Read and write variables
@@ -39,6 +40,7 @@ namespace _4UFinal
         public bool changingItemslot = false; // Is an item currently being selected?
         public bool changingRoom = false; // Is the stage switching between rooms?
         public bool pressingProp = false; // Is a PropPressed event currently being called?
+        public bool printingText = false; // Is there help text on the screen?
         ImageBrush bk = new ImageBrush(); // TileBrush for the background
         object downOn = null;
 
@@ -112,8 +114,8 @@ namespace _4UFinal
             RefreshStage();
             // </initializeSystems>
             // <timer>
-            //timer.Interval = TimeSpan.FromMilliseconds(40);
-            //timer.Tick += TimerTick;
+            timer.Interval = TimeSpan.FromMilliseconds(40);
+            timer.Tick += TimerTick;
             // </timer>
             // <debugging>
 
@@ -218,17 +220,16 @@ namespace _4UFinal
         }
 
         //<timer>
-        /*private void TimerTick(object sender, EventArgs e)
+        private void TimerTick(object sender, EventArgs e)
         {
             counter++;
+            if (counter > 15)
+            {
+                printingText = false;
+                counter = 0;
+                timer.Stop();
+            }
         }
-
-        private void Wait(int time)
-        {
-            timer.Start();
-            while (counter < time) { }
-            timer.Stop();
-        }*/
         //</timer>
 
         //<initialization>
@@ -330,28 +331,39 @@ namespace _4UFinal
         //<dialogue>
         private void PrintObject(Item selected, bool name = true, bool description = true, bool portrait = false) // Displays on-screen information about the object
         {
-            if (name) DialogueName.Text = selected.Name;
-            if (description) DialogueBox.Text = selected.Description;
-            if (portrait) TextPortrait.Source = selected.Portrait;
+            if (!printingText)
+            {
+                if (name) DialogueName.Text = selected.Name;
+                if (description) DialogueBox.Text = selected.Description;
+                if (portrait) TextPortrait.Source = selected.Portrait;
+            }
         }
 
         private void PrintObject(Prop selected, bool name = true, bool description = true) // Displays on-screen information about the object
         {
-            if (name) DialogueName.Text = selected.Name;
-            if (description) DialogueBox.Text = selected.Description;
+            if (!printingText)
+            {
+                if (name) DialogueName.Text = selected.Name;
+                if (description) DialogueBox.Text = selected.Description;
+            }
         }
 
         private void PrintText(string dialogue)
         {
             ClearPrint();
+            printingText = true;
             DialogueBox.Text = dialogue;
+            timer.Start();
         }
 
         private void ClearPrint() // Removes text and images from the dialogue box
         {
-            DialogueName.Text = string.Empty;
-            DialogueBox.Text = string.Empty;
-            TextPortrait.Source = null;
+            if (!printingText)
+            {
+                DialogueName.Text = string.Empty;
+                DialogueBox.Text = string.Empty;
+                TextPortrait.Source = null;
+            }
         }
         //</dialogue>
 
@@ -458,6 +470,11 @@ namespace _4UFinal
                                     }
                                     break;
                                 case "N Door":
+                                    if (conditions[20] && conditions[21] && conditions[22])
+                                    {
+                                        MessageBox.Show("You have successfully escaped! Thanks for playing!", "Congratulations!", MessageBoxButton.OK, MessageBoxImage.None);
+                                        Environment.Exit(0);
+                                    }
                                     break;
                                 case "E Door":
                                     if (!conditions[3])
@@ -719,28 +736,60 @@ namespace _4UFinal
         //</propInteraction>
 
         //<events>
-        private void OuterScreen_KeyDown(object sender, KeyEventArgs e) // Activates and deactivates F11 Mode
+        private void OuterScreen_KeyDown(object sender, KeyEventArgs e) // KEY BINDS
         {
-            if (e.Key == Key.F11 && !changingFullscreen)
+            switch (e.Key)
             {
-                changingFullscreen = true;
-                switch (isFullscreen)
-                {
-                    case true:
-                        WindowStyle = WindowStyle.SingleBorderWindow;
-                        WindowState = WindowState.Maximized;
-                        ResizeMode = ResizeMode.CanResize;
-                        isFullscreen = false;
-                        break;
-                    default:
-                        WindowStyle = WindowStyle.None;
-                        WindowState = WindowState.Normal;
-                        WindowState = WindowState.Maximized;
-                        ResizeMode = ResizeMode.NoResize;
-                        isFullscreen = true;
-                        break;
-                }
-                changingFullscreen = false;
+                case Key.V: // V - Switch direction
+                    if (!changingRoom)
+                    {
+                        changingRoom = true;
+                        facingNorth = !facingNorth;
+                        RefreshStage();
+                        changingRoom = false;
+                    }
+                    break;
+                case Key.C: // C - Toggle inventory
+                    if (conditions[23] == false && currentRoom == 5)
+                    {
+                        PrintText("If I put away my torch, I'll be stuck in the dark. Maybe if I can mount it somewhere...");
+                    }
+                    else if (!changingInventory)
+                    {
+                        changingInventory = true;
+                        ShowHide(InventoryCanvas);
+                        for (int i = 0; i < 15; i++)
+                        {
+                            if (i < inventory.Count) invSlots[i].Source = inventory[i].Portrait;
+                            else invSlots[i].Source = items[0];
+                        }
+                        changingInventory = false;
+                    }
+                    break;
+                case Key.F11:
+                    if (!changingFullscreen)
+                    {
+                        changingFullscreen = true;
+                        switch (isFullscreen)
+                        {
+                            case true:
+                                WindowStyle = WindowStyle.SingleBorderWindow;
+                                WindowState = WindowState.Maximized;
+                                ResizeMode = ResizeMode.CanResize;
+                                isFullscreen = false;
+                                break;
+                            default:
+                                WindowStyle = WindowStyle.None;
+                                WindowState = WindowState.Normal;
+                                WindowState = WindowState.Maximized;
+                                ResizeMode = ResizeMode.NoResize;
+                                isFullscreen = true;
+                                break;
+                        }
+                        changingFullscreen = false;
+                        changingFullscreen = false;
+                    }
+                    break;
             }
         }
 
