@@ -84,6 +84,7 @@ namespace _4UFinal
         public MainWindow()
         {
             InitializeComponent();
+            OuterScreen.Title = "Escape Room";
             // <loadFiles>
             assets = LoadImages(@".\img\assets");
             props = LoadImages(@".\img\props");
@@ -120,6 +121,11 @@ namespace _4UFinal
             // <debugging>
 
             // </debugging>
+            if (MessageBox.Show("Would you like me to explain the controls?", "Welcome to my escape room!", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                MessageBox.Show("- Hover your mouse over objects to read their descriptions\n- Click on objects to interact with them\n- Access your inventory by clicking the inventory slot on the bottom right\n- Click on objects while holding an item to use it with the object (i.e. a key with a lock)\n- When you use an item on an object successfully it will be removed from your inventory\n- Click just above the dialogue box (when your mouse becomes a down-facing arrow) to face the opposite direction\n- Use your head and have fun\n\nKeyboard Shortcuts:\nF11 - Toggles fullscreen mode\nV - Change directions\nC - Open inventory\nEsc - Quit the game", "", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
         }
 
         private List<BitmapImage> LoadImages(string path) // Loads images from a specified folder and returns a list of ImageBrushs
@@ -789,6 +795,9 @@ namespace _4UFinal
                         changingFullscreen = false;
                         changingFullscreen = false;
                     }
+                    break;
+                case Key.Escape:
+                    Environment.Exit(0);
                     break;
             }
         }
