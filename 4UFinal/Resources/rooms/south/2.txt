@@ -1,0 +1,3 @@
+Door>This door leads to the lobby.>0>590>125
+Bookshelf>It looks like it's bolted to the wall...>16>20>0
+Card Reader>This door's already unlocked. I wonder what this is for?>5>500>275

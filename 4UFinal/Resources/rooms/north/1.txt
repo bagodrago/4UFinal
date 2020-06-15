@@ -1,0 +1,3 @@
+W Door>This door leads to a new room...>1>-20>125
+N Door>The door is locked tight... I don't see any way to open them from here.>3>300>125
+E Door>This door leads to a new room...>2>620>125

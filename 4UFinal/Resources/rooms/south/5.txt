@@ -1,0 +1,2 @@
+Sconce>Looks like a torch could go here...>20>10>50
+Wine Shelf>It looks like there's a grate screwed over the shelf. I won't be able to do anything until I get it off.>26>250>160

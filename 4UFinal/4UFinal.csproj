@@ -131,5 +131,86 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\db\items.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\rooms\north\0.txt" />
+    <Resource Include="Resources\rooms\north\1.txt" />
+    <Resource Include="Resources\rooms\north\2.txt" />
+    <Resource Include="Resources\rooms\north\3.txt" />
+    <Resource Include="Resources\rooms\north\4.txt" />
+    <Resource Include="Resources\rooms\north\5.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\rooms\south\0.txt" />
+    <Resource Include="Resources\rooms\south\1.txt" />
+    <Resource Include="Resources\rooms\south\2.txt" />
+    <Resource Include="Resources\rooms\south\3.txt" />
+    <Resource Include="Resources\rooms\south\4.txt" />
+    <Resource Include="Resources\rooms\south\5.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\img\assets\a.png" />
+    <Resource Include="Resources\img\assets\b.png" />
+    <Resource Include="Resources\img\assets\c.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\img\background\0.png" />
+    <Resource Include="Resources\img\background\1.png" />
+    <Resource Include="Resources\img\background\2.png" />
+    <Resource Include="Resources\img\background\3.png" />
+    <Resource Include="Resources\img\background\4.png" />
+    <Resource Include="Resources\img\background\5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\img\items\a.png" />
+    <Resource Include="Resources\img\items\b.png" />
+    <Resource Include="Resources\img\items\c.png" />
+    <Resource Include="Resources\img\items\d.png" />
+    <Resource Include="Resources\img\items\e.png" />
+    <Resource Include="Resources\img\items\f.png" />
+    <Resource Include="Resources\img\items\g.png" />
+    <Resource Include="Resources\img\items\h.png" />
+    <Resource Include="Resources\img\items\i.png" />
+    <Resource Include="Resources\img\items\j.png" />
+    <Resource Include="Resources\img\items\k.png" />
+    <Resource Include="Resources\img\items\l.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\img\props\aa.png" />
+    <Resource Include="Resources\img\props\ab.png" />
+    <Resource Include="Resources\img\props\ac.png" />
+    <Resource Include="Resources\img\props\ad.png" />
+    <Resource Include="Resources\img\props\ae.png" />
+    <Resource Include="Resources\img\props\af.png" />
+    <Resource Include="Resources\img\props\ag.png" />
+    <Resource Include="Resources\img\props\ah.png" />
+    <Resource Include="Resources\img\props\ai.png" />
+    <Resource Include="Resources\img\props\aj.png" />
+    <Resource Include="Resources\img\props\ak.png" />
+    <Resource Include="Resources\img\props\al.png" />
+    <Resource Include="Resources\img\props\am.png" />
+    <Resource Include="Resources\img\props\an.png" />
+    <Resource Include="Resources\img\props\ao.png" />
+    <Resource Include="Resources\img\props\ap.png" />
+    <Resource Include="Resources\img\props\aq.png" />
+    <Resource Include="Resources\img\props\ar.png" />
+    <Resource Include="Resources\img\props\as.png" />
+    <Resource Include="Resources\img\props\at.png" />
+    <Resource Include="Resources\img\props\au.png" />
+    <Resource Include="Resources\img\props\av.png" />
+    <Resource Include="Resources\img\props\aw.png" />
+    <Resource Include="Resources\img\props\ax.png" />
+    <Resource Include="Resources\img\props\ay.png" />
+    <Resource Include="Resources\img\props\az.png" />
+    <Resource Include="Resources\img\props\ba.png" />
+    <Resource Include="Resources\img\props\bb.png" />
+    <Resource Include="Resources\img\props\bc.png" />
+    <Resource Include="Resources\img\props\bd.png" />
+    <Resource Include="Resources\img\props\be.png" />
+    <Resource Include="Resources\img\props\bf.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

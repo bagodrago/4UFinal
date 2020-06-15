@@ -1,0 +1,2 @@
+Secret Entrance>This door leads back to the library.>21>0>0
+Toolbox>Looks like there's a lot of things in here I could use.>22>550>145

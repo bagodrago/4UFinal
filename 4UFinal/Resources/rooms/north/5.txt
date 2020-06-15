@@ -1,0 +1,2 @@
+Door>This door leads to the mudroom.>24>590>125
+Glass Bottle>Looks like this bottle doesn't have any wine in it. Actually, I think I see something else in there...>29>90>350

@@ -1,0 +1,3 @@
+Door>This door leads to the lobby.>0>20>125
+Coat Rack>A nice looking coat hangs on this rack. It's a bit too pixelated for my taste though...>18>350>140
+Dark Room>It's too dark in there to see anything. Maybe if I could light it up...>24>500>125

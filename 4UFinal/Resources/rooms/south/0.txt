@@ -1,0 +1,2 @@
+Fireplace>Looks like the fire is still going. It's probably a gas fireplace.>12>325>50
+Sofa Chair>That's odd, there's not a lot of dust on here...>11>50>250
