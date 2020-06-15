@@ -1,0 +1,2 @@
+Left Sconce>It's holding an unlit torch. Maybe I could use it?>19>300>100
+Right Sconce>This one used to hold a torch. Who knows how long it's been missing...?>20>550>100

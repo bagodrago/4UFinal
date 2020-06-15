@@ -1,0 +1,3 @@
+S Door>This door leads to the study.>0>300>125
+Painting>It's a creepy looking portrait.>13>50>80
+Fuel Canister>A metal container full of gasoline. Maybe I could use this...>14>780>370

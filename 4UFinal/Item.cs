@@ -23,6 +23,8 @@ namespace _4UFinal
             l_portrait = portrait;
         }
 
+        _4UFinal.Properties.Resources.db
+
         public Item()
         {
             l_name = string.Empty;

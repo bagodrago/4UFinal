@@ -1,0 +1,3 @@
+Door>Looks like it's locked tight...>0>300>125
+Clock>Seems like the clock is broken. I wonder how long it's been broken...>4>225>375
+Card Reader>Maybe I can open this door with a key card...>5>620>275

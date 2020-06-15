@@ -1,0 +1,11 @@
+﻿Stopwatch>It tells the time. I keep it in my back pocket.>1
+Red Card>A keycard. I can probably use it to unlock something.>2
+Torch>An unlit torch. It looks a little dry. If I light it now, I'll burn the cloth.>3
+Fuel-Soaked Torch>That should be enough fuel to last me a while... Now to light it.>4
+Lit Torch>A lit torch. I should be able to light dark places with it.>5
+Key>I found this in someone's coat pocket. I wonder what it opens?>6
+Blue Card>A keycard. I can probably use it to unlock something.>7
+Knife>It's a bit dull, but it should be able to cut through something with enough effort.>8
+Screwdriver>Looks like a flathead. Maybe I can open something with it?>9
+Hammer>I don't know how this will be useful, but it sure would be fun to smash things with...>10
+Yellow Card>A keycard. I can probably use it to unlock something.>11
