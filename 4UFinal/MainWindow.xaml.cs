@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.IO;
 
@@ -22,6 +16,10 @@ namespace _4UFinal
     /// </summary>
     public partial class MainWindow : Window
     {
+        // <AppDomain>
+        string currentPath = AppDomain.CurrentDomain.BaseDirectory;
+        // </AppDomain>
+
         // <RO Variables> - Read-only variables
         static List<BitmapImage> assets = new List<BitmapImage>() { }; // Static assets (do not change during the game)
         static List<BitmapImage> props = new List<BitmapImage>() { }; // Character portraits for text box
@@ -31,7 +29,8 @@ namespace _4UFinal
         List<Item> itemDB = new List<Item>() { }; // A database of all items to refer to when adding to inventory.
         DispatcherTimer timer = new DispatcherTimer(); // Timer used strictly for delay.
         int counter = 0;
-        // </RO Variables>
+        // </RO Variables
+
 
         // <RW Variables> - Read and write variables
         public bool isFullscreen = false; // Is F11 mode is on?
@@ -86,10 +85,11 @@ namespace _4UFinal
             InitializeComponent();
             OuterScreen.Title = "Escape Room";
             // <loadFiles>
-            assets = LoadImages(@".\img\assets");
-            props = LoadImages(@".\img\props");
-            items = LoadImages(@".\img\items");
-            backgrounds = LoadImages(@".\img\background");
+            
+            assets = LoadImages(@"img\assets");
+            props = LoadImages(@"img\props");
+            items = LoadImages(@"img\items");
+            backgrounds = LoadImages(@"img\background");
             // </loadFiles>
             // <tiling> - Creates tiling background
             bk = new ImageBrush(assets[0])
@@ -130,10 +130,12 @@ namespace _4UFinal
 
         private List<BitmapImage> LoadImages(string path) // Loads images from a specified folder and returns a list of ImageBrushs
         {
-            string[] temp = Directory.GetFiles(path, "*.png");
+            string[] temp = Directory.GetFiles(@"..\..\Resources\" + path, "*.png");
             Array.Sort(temp);
+            
             List<BitmapImage> container = new List<BitmapImage>();
-            foreach (string file in temp) { container.Add(new BitmapImage(new Uri(System.IO.Path.Combine(Environment.CurrentDirectory, file)))); }
+            foreach (string file in temp) { container.Add(new BitmapImage(new Uri(Path.Combine(Environment.CurrentDirectory, file)))); }
+            //foreach (string file in temp) { container.Add(new BitmapImage(new Uri(file))); }
             return container;
         }
 
@@ -283,7 +285,7 @@ namespace _4UFinal
                 for (int i = 0; i < 6; i++)
                 {
                     tempRoom = new Room(new List<Prop>(), new List<Prop>());
-                    room = File.ReadAllLines(@".\rooms\north\" + i + ".txt");
+                    room = File.ReadAllLines(@"..\..\Resources\rooms\north\" + i + ".txt");
                     for (int j = 0; j < room.Length; j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
@@ -294,7 +296,7 @@ namespace _4UFinal
                         tempProp.Sprite.MouseLeftButtonDown += MouseButtonDown;
                         tempRoom.North.Add(tempProp);
                     }
-                    room = File.ReadAllLines(@".\rooms\south\" + i + ".txt");
+                    room = File.ReadAllLines(@"..\..\Resources\rooms\south\" + i + ".txt");
                     for (int j = 0; j < room.Length; j++)
                     {
                         tempProps = room[j].Split('>'); // Name>Description>Source>X>Y>Warp
@@ -319,7 +321,7 @@ namespace _4UFinal
             Item tempItem;
             try
             {
-                string[] lines = File.ReadAllLines(@".\db\items.txt");
+                string[] lines = File.ReadAllLines(@"..\..\Resources\db\items.txt");
                 for (int i = 0; i < lines.Length; i++)
                 {
                     tempLine = lines[i].Split('>'); // Name>Description>Source

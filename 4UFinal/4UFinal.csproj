@@ -134,7 +134,6 @@
   <ItemGroup>
     <Resource Include="Resources\db\items.txt" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\rooms\north\0.txt" />
     <Resource Include="Resources\rooms\north\1.txt" />
